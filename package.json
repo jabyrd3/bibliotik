@@ -1,0 +1,20 @@
+{
+  "name": "biblio",
+  "version": "1.0.0",
+  "description": "download books easier",
+  "main": "search.js",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "inquirer": "^1.2.2",
+    "keytar": "^3.0.2",
+    "lodash": "^4.16.6",
+    "nightmare": "^2.8.1",
+    "parse-torrent": "^5.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jordan byrd",
+  "license": "ISC"
+}
