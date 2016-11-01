@@ -2,7 +2,7 @@
 CLI interface for bibliotik / tranmission. Logs into bibliotik, scrapes their search page, adds the torrent to transmission via RPC, then downloads the file to a folder of your choosing (i use dropbox).
 
 # warning
-don't use this yet. I'm waiting on an update to `parse-torrent` to remove a deprecation message that kinda messages with the output. It definitely feels broken. I alse need to get some utility commands in here, which would necesitate either argv hacks or commander, and I don't have time for that right now. Once I've gotten those 2 chores done, this will be a lot more usable. My end goal is:
+don't use this yet. I'm waiting on an update to `parse-torrent` to remove a deprecation message that kinda messes with the output. It definitely feels broken. I alse need to get some utility commands in here, which would necesitate either argv hacks or commander, and I don't have time for that right now. Once I've gotten those 2 chores done, this will be a lot more usable. My end goal is:
 
 ```
 npm install -g biblio
