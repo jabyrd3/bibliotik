@@ -72,7 +72,7 @@ const downloadLink = (link) => {
     // download torrent from bibliotik
     https.get({
         protocol: 'https:',
-        hostname: `bibliotik.me `,
+        hostname: `bibliotik.me`,
         path: `${link}/download`,
         headers: {
             cookie: payload
@@ -113,18 +113,21 @@ const doneTorrent = (meta, data) => {
         // otherwise, returns false.
     const digits = torrentData.match(/\d\d\d(?=\%)/g);
     console.log(`Download is ${digits}% done.`);
-    return digits[0] ? digits[0] === '100' : false;
+    if(digits !== null){
+        return digits[0] ? digits[0] === '100' : false;
+    }
+    return 0;
 };
 
 const torrentDone = (meta) => {
     // checks if torrent is done with transmission-remote
-    const child = exec(`scp ${config.remoteSettings.sshName}:"'${config.remoteSettings.sshPath}/${meta.name}'" ${settings.localSettings.dest}`);
+    const child = exec(`scp ${config.remoteSettings.sshName}:"'${config.remoteSettings.sshPath}/${meta.name}'" ${config.localSettings.dest}`);
     child.on('error', err => {
         console.log(err);
-    })
+    });
     child.on('close', code => {
         console.log(code === 0 ? 'Check your destination directory.' : 'There was an error, check your config.');
-    })
+    });
 };
 
 const pollTransmission = (metadata, interval) => {
@@ -175,4 +178,4 @@ const query = () => {
 };
 // query();
 // addTorrent();
-setTimeout(setup, 1000);
+setup();
