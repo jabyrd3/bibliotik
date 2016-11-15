@@ -1,6 +1,6 @@
 {
   "name": "bibliotik",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "download books easier",
   "main": "search.js",
   "dependencies": {
