@@ -6,20 +6,22 @@ don't use this yet. I'm waiting on an update to `parse-torrent` to remove a depr
 
 ```
 npm install -g biblio
+... follow setup instructions ...
 biblio search {searchstring}
 ```
-Not quite there yet. Few days hopefully.
-
 ## usage:
 biblio {searchstring}
-
+... follow prompts ...
 ## setup
-copy config.js.sample to config.js. Edit that file according to the comments. Your first time logging in, biblio will ask you for a few passwords. They will be cached in your OS keychain (windows or mac, not sure about linux, give it a shot though). the only way to fix an incorrect password for now is to erase the bbtk_* entries from your systems keychain.
+When you first try to run bibliotik you will be prompted to edit ~/.bib_config.js. These are settings for usernames, etc. Passwords will be cached in your OS keychain (windows or mac, not sure about linux, give it a shot though). the only way to fix an incorrect password for now is to erase the bbtk_* entries from your systems keychain.
 
 ## todo:
+- [x] .eslintrc
+- [ ] global install with config in ~/.bib_config
 - [ ] support local transmission (lol).
 - [x] keytar.
-- [ ] refactor.
+- [ ] fix null bug
+- [ ] refactor / reorganize
 - [ ] better search output (filesize).
 - [x] interactive config / setup.
 - [ ] add commander for utility / cleanup tasks.
