@@ -88,7 +88,7 @@ const downloadLink = (link) => {
         return `${ cv.name }=${ cv.value };${ pv }`;
     }, '');
     const handle = fs
-        .createWriteStream(`${__dirname}/${config.localSettings.tempName}`);
+        .createWriteStream(`${os.homedir()}/${config.localSettings.tempName}`);
     // download torrent from bibliotik
     https.get({
         protocol: 'https:',
@@ -100,7 +100,7 @@ const downloadLink = (link) => {
     }, (res) => {
         res.pipe(handle);
         spawn('scp', [
-            __dirname + config.localSettings.tempName,
+            os.homedir() + config.localSettings.tempName,
             `${config.remoteSettings.sshName}:${config.remoteSettings.sshPath}`
             ])
             .on('close', () => {
@@ -118,7 +118,7 @@ const addTorrent = () => {
     // adds torrent to transmissin, intiating download
     var child = exec(`transmission-remote ${config.remoteSettings.rpcUrl} `+
         `--auth=${config.remoteSettings.userName}:${rpcPass} `+
-        `-a ${__dirname}/${config.localSettings.tempName}`);
+        `-a ${os.homedir()}/${config.localSettings.tempName}`);
     child.on('close', code => {
         pollTransmission(getTorrentId(), 1000);
     });
