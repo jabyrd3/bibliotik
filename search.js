@@ -111,7 +111,7 @@ const downloadLink = (link) => {
 };
 
 const getTorrentId = () => {
-    return parseTorrent(fs.readFileSync(__dirname + '/temp.torrent'));
+    return parseTorrent(fs.readFileSync(os.homedir() + '/temp.torrent'));
 };
 
 const addTorrent = () => {
