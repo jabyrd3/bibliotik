@@ -87,7 +87,8 @@ const downloadLink = (link) => {
     const payload = cookies.reduce((pv, cv, i, arr) => {
         return `${ cv.name }=${ cv.value };${ pv }`;
     }, '');
-    const handle = fs.createWriteStream(config.localSettings.tempName);
+    const handle = fs
+        .createWriteStream(`${__dirname}/${config.localSettings.tempName}`);
     // download torrent from bibliotik
     https.get({
         protocol: 'https:',
@@ -99,7 +100,7 @@ const downloadLink = (link) => {
     }, (res) => {
         res.pipe(handle);
         spawn('scp', [
-            config.localSettings.tempName,
+            __dirname + config.localSettings.tempName,
             `${config.remoteSettings.sshName}:${config.remoteSettings.sshPath}`
             ])
             .on('close', () => {
@@ -135,8 +136,6 @@ const isTorrentDone = (meta, data) => {
     // regex for 100% from t-r list output.
     // returns true if torrents metadata line contains 100%
     // otherwise, returns false.
-    fs.writeFileSync('./scratch', data, 'utf8')
-    fs.writeFileSync('./metascratch', JSON.stringify(meta), 'utf8')
     if (torrentData){
         const digits = torrentData.match(/\d\d\d(?=\%)/g);
         console.log(`Download is ${digits}% done.`);
@@ -218,6 +217,4 @@ const query = () => {
         // shouldn't ever get here, but log if we do.
         .catch(err => console.log);
 };
-// query();
-// addTorrent();
 setup();
