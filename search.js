@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 'use strict';
 /* globals document */
 const os = require('os');
