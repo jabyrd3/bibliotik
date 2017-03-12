@@ -17,7 +17,7 @@ let config;
 try {
     config = require(`${os.homedir()}/.bib_config.js`);
 } catch (e) {
-    const temp = fs.readFileSync('./config.example.js');
+    const temp = fs.readFileSync(`${__dirname}/config.example.js`);
     fs.writeFileSync(`${os.homedir()}/.bib_config.js`, temp,
         'utf8');
     console.log('edit .bib_config.js in your home directory.');
