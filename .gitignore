@@ -4,3 +4,4 @@ node_modules
 biblio.sublime-project
 biblio.sublime-workspace
 temp.torrent
+package-lock.json

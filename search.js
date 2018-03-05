@@ -100,11 +100,14 @@ const downloadLink = (link) => {
     }, (res) => {
         res.pipe(handle);
         spawn('scp', [
-            os.homedir() + config.localSettings.tempName,
+            `${os.homedir()}/${config.localSettings.tempName}`,
             `${config.remoteSettings.sshName}:${config.remoteSettings.sshPath}`
             ])
-            .on('close', () => {
-                console.log('Torrent copied to seedbox.');
+            .on('close', (err) => {
+                console.log('Torrent copied to seedbox.', err,
+            `${os.homedir()}/${config.localSettings.tempName}`,
+            `${config.remoteSettings.sshName}:${config.remoteSettings.sshPath}`
+                 );
                 addTorrent();
             });
     });
@@ -120,7 +123,7 @@ const addTorrent = () => {
         `--auth=${config.remoteSettings.userName}:${rpcPass} `+
         `-a ${os.homedir()}/${config.localSettings.tempName}`);
     child.on('close', code => {
-        pollTransmission(getTorrentId(), 1000);
+        pollTransmission(getTorrentId(), 3000);
     });
 };
 
@@ -137,8 +140,12 @@ const isTorrentDone = (meta, data) => {
     // returns true if torrents metadata line contains 100%
     // otherwise, returns false.
     if (torrentData){
-        const digits = torrentData.match(/\d\d\d(?=\%)/g);
-        console.log(`Download is ${digits}% done.`);
+      // todo: match
+      //91   100%   459.6 kB  Done         0.0    16.0    0.0  Idle         Equoid_ A Laundry Novella - Charles Stross.epub
+      //Download is 0% done.
+        const digits = torrentData.match(/\d{2,}(?=\%)/);
+        console.log(torrentData);
+        console.log(`Download is ${digits || 0}% done.`);
         if (digits !== null) {
             return digits[0] ? digits[0] === '100' : false;
         }
@@ -147,7 +154,7 @@ const isTorrentDone = (meta, data) => {
 };
 
 const torrentDone = (meta) => {
-    // checks if torrent is done with transmission-remote
+  // scp from remote to local destination
     const child = exec(`scp ${config.remoteSettings.sshName}:`+
         `"'${config.remoteSettings.sshPath}/${meta.name}'" `+
         `${config.localSettings.dest}`);
@@ -161,6 +168,7 @@ const torrentDone = (meta) => {
         process.exit();
     });
 };
+
 
 const pollTransmission = (metadata, interval) => {
     // poll transmission for torrent copmletion every {interval} seconds,
