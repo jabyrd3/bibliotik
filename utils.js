@@ -11,8 +11,15 @@ const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 const parseTorrent = require('parse-torrent');
 const _ = require('lodash');
-const keytar = require('keytar');
+var keytar;
+try{
+  keytar = require('keytar');
+}catch(e){
+  console.warn('no keytar, this needs to run in server mode');
+}
+console.log('jab', os.homedir());
 let config;
+
 try {
     config = require(`${os.homedir()}/.bib_config.js`);
 } catch (e) {
@@ -51,7 +58,6 @@ const setup = () => {
     });
     if (queue.length > 0) {
         inquirer.prompt(queue.map(item => {
-          console.log(item);
             return {
                 type: 'password',
                 name: item.name,
