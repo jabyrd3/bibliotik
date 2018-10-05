@@ -144,7 +144,6 @@ const isTorrentDone = (meta, data) => {
       //91   100%   459.6 kB  Done         0.0    16.0    0.0  Idle         Equoid_ A Laundry Novella - Charles Stross.epub
       //Download is 0% done.
         const digits = torrentData.match(/\d{2,}(?=\%)/);
-        console.log(torrentData);
         console.log(`Download is ${digits || 0}% done.`);
         if (digits !== null) {
             return digits[0] ? digits[0] === '100' : false;
