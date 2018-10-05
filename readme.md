@@ -3,7 +3,7 @@ CLI interface for bibliotik / tranmission. Logs into bibliotik, scrapes their se
 
 # install
 ```
-sudo npm install -g biblio
+npm install -g biblio
 ... follow setup instructions ...
 ```
 
@@ -28,3 +28,6 @@ When you first try to run bibliotik you will be prompted to edit `~/.bib_config.
 - [x] keytar.
 - [x] fix null bug
 - [x] interactive config / setup.
+
+# NEW server mode:
+process env needs variables RPC_PASS and BIB_PASS so we can skip interactive setup phase from the CLI. make sure .bib_config.js exists in your home dir
