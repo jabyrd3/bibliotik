@@ -219,7 +219,6 @@ const query = (qString) => {
                 return doc && doc.innerHTML;
             })
             .then(result => {
-                console.log(result);
                 // hacky way to get cookies for subsequent requests :|
                 nightmare.cookies.get().then(ck => {
                     cookies = ck;
@@ -231,32 +230,32 @@ const query = (qString) => {
                   // each row, prepare string / value pair for inquirer list
                   $('tbody tr').each(function(ind, item){
                       var target = $(item);
-                      options.push({
-                          name: `${target
-                              .find('.torFormat')
-                              .text()} ${target.find('a').html()} `,
-                          value: target.find('a').attr('href')
-                      });
+                      if(target.find('.torFormat').text().indexOf('EPUB') > -1){
+                        options.push({
+                            name: `${target
+                                .find('.torFormat')
+                                .text()} ${target.find('a').html()} `,
+                            value: target.find('a').attr('href')
+                        });
+                      }
                   });
                   process.argv[2] && userPrompt(options);
                   return [nightmare, options];
-                }else{
-                  return [nightmare, []]
+                } else {
+                  return [nightmare, []];
                 }
             })
             // cleanup stupid browser tab.
             .then(nm => {
-              console.log('shouldnt happen');
               nm[0].halt();
               nightmare.cookies.set(cookies);
               res(nm[1]);
             })
             // shouldn't ever get here, but log if we do.
             .catch(err => {
-              console.log('postcatch')
               nightmare.halt();
               nightmare.cookies.set(cookies);
-              return console.log(err) || rej(err)
+              return console.log(err) || rej(err);
             });
           });
 };
