@@ -232,9 +232,7 @@ const query = (qString) => {
                       var target = $(item);
                       if(target.find('.torFormat').text().indexOf('EPUB') > -1){
                         options.push({
-                            name: `${target
-                                .find('.torFormat')
-                                .text()} ${target.find('a').html()} `,
+                            name: `${target.find('a').html()}`,
                             value: target.find('a').attr('href')
                         });
                       }
