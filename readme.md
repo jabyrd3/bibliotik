@@ -3,7 +3,7 @@ CLI or http interface for bibliotik / tranmission. Logs into bibliotik, scrapes 
 
 # install
 ```
-npm install -g biblio
+npm install -g bibliotik
 ... follow setup instructions ...
 ```
 
