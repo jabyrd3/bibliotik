@@ -25,8 +25,9 @@ When you first try to run bibliotik you will be prompted to edit `~/.bib_config.
 - clone this repo and cd
 - `docker build --tag biblio .`
 - put a .bib_config file in your home directory or somewhere that looks like this:
-'use strict';
+
 ```
+'use strict';
 module.exports = {
   localSettings: {
     tempName: 'temp.torrent', // filename for temporary torrent
