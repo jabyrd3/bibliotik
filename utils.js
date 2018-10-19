@@ -11,6 +11,7 @@ const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 const parseTorrent = require('parse-torrent');
 const _ = require('lodash');
+const cp = require('cp');
 var keytar;
 try{
   keytar = require('keytar');
@@ -108,6 +109,7 @@ const downloadLink = (link) => {
           }
       }, (res) => {
           res.pipe(handle);
+        if(config.remoteSettings.isRemote){
           spawn('scp', [
               `${os.homedir()}/${config.localSettings.tempName}`,
               `${config.remoteSettings.sshName}:${config.remoteSettings.sshPath}`
@@ -119,6 +121,13 @@ const downloadLink = (link) => {
                   resolve(addTorrent);
                   process.argv[2] && addTorrent();
               });
+        } else {
+          console.log('moving file from homedir/temp to config.remoteSettings.sshPath');
+          cp(`${os.homedir()}/${config.localSettings.tempName}` , `${config.remoteSettings.sshPath}/${config.localSettings.tempName}`, (err)=>{ 
+            console.log('jab err rename', err);
+            resolve(addTorrent)
+          });
+        }
       });
     });
 };
@@ -128,11 +137,14 @@ const getTorrentId = () => {
 };
 
 const addTorrent = () => {
+  console.log('addtorrent');
     // adds torrent to transmissin, intiating download
     return new Promise((res, rej)=>{
       var child = exec(`transmission-remote ${config.remoteSettings.rpcUrl} `+
           `--auth=${config.remoteSettings.userName}:${rpcPass} `+
           `-a ${os.homedir()}/${config.localSettings.tempName}`);
+      child.stderr.on('data', console.log);
+      child.stdout.on('data', console.log);
       return child.on('close', code => {
           process.argv[2] && pollTransmission(getTorrentId(), 3000);
           return res(pollTransmission)
@@ -168,6 +180,7 @@ const isTorrentDone = (meta, data) => {
 const torrentDone = (meta) => {
   // scp from remote to local destination
   return new Promise((res, rej)=>{
+    if(config.remoteSettings.isRemote){
       const child = exec(`scp ${config.remoteSettings.sshName}:`+
           `"'${config.remoteSettings.sshPath}/${meta.name}'" `+
           `${config.localSettings.dest}`);
@@ -182,6 +195,11 @@ const torrentDone = (meta) => {
           res(meta.name);
           process.argv[2] && process.exit();
       });
+    }else{
+      cp(`config.remoteSettings.sshPath/${meta.name}`, config.localSettings.dest, ()=>{
+        res(meta.name); 
+      });
+    }
     });
 };
 
@@ -226,39 +244,38 @@ const query = (qString) => {
             })
             .then(result => {
                 // hacky way to get cookies for subsequent requests :|
+                return new Promise((req, res)  =>{
                 nightmare.cookies.get().then(ck => {
                     cookies = ck;
+                    if (result){
+                      // built in nightmare $ was broke af
+                      let $ = cheerio.load(result);
+                      let options = [];
+                      // each row, prepare string / value pair for inquirer list
+                      $('tbody tr').each(function(ind, item){
+                          var target = $(item);
+                          if(target.find('.torFormat').text().indexOf('EPUB') > -1){
+                            options.push({
+                                name: `${target.find('a').html()}`,
+                                value: target.find('a').attr('href')
+                            });
+                          }
+                      });
+                      process.argv[2] && userPrompt(options);
+                      return req([nightmare, options]);
+                    } else {
+                      return req([nightmare, []]);
+                    }});
                 });
-                if (result){
-                  // built in nightmare $ was broke af
-                  let $ = cheerio.load(result);
-                  let options = [];
-                  // each row, prepare string / value pair for inquirer list
-                  $('tbody tr').each(function(ind, item){
-                      var target = $(item);
-                      if(target.find('.torFormat').text().indexOf('EPUB') > -1){
-                        options.push({
-                            name: `${target.find('a').html()}`,
-                            value: target.find('a').attr('href')
-                        });
-                      }
-                  });
-                  process.argv[2] && userPrompt(options);
-                  return [nightmare, options];
-                } else {
-                  return [nightmare, []];
-                }
             })
             // cleanup stupid browser tab.
             .then(nm => {
               nm[0].halt();
-              nightmare.cookies.set(cookies);
               res(nm[1]);
             })
             // shouldn't ever get here, but log if we do.
             .catch(err => {
               nightmare.halt();
-              nightmare.cookies.set(cookies);
               return console.log(err) || rej(err);
             });
           });
