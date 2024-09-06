@@ -18,7 +18,7 @@ try{
 }catch(e){
   console.warn('no keytar, this needs to run in server mode');
 }
-// console.log('jab', os.homedir());
+console.log('jab', os.homedir());
 let config;
 
 try {

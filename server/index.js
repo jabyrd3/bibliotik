@@ -17,7 +17,7 @@ app.get('/fetch/torrents/:id', (req, res) => {
     .then(at=>at())
     .then(pt=>pt(getTorrentId(), 3000))
     .then((td) => console.log('polltransmission resolved')|| td[0](td[1]))
-    .then(meta => res.send(meta));
+    .then(meta => console.log('sending meta: ', meta) || res.send(encodeURIComponent(meta)));
 });
 app.get('/download/:id', (req, res) => {
   res.sendFile(`${config.localSettings.absDest}/${req.params.id.trim()}`);
